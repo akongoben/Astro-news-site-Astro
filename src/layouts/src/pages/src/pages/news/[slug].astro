@@ -1,0 +1,26 @@
+---
+import NewsLayout from '../../layouts/NewsLayout.astro';
+
+
+// load all posts
+const postsImport = import.meta.glob('../../content/news/**/*.md', { eager: true });
+const posts = Object.values(postsImport).map((p) => ({ ...p.frontmatter, Content: p.default }));
+
+
+const { slug } = Astro.params;
+const post = posts.find(p => p.slug === slug);
+
+
+if (!post) {
+throw new Error('Post not found');
+}
+---
+<NewsLayout>
+<article>
+<h1 class="text-3xl font-bold">{post.title}</h1>
+<p class="text-sm text-slate-500">{post.date} • {post.lang}</p>
+<div class="prose mt-6"><!-- render Markdown content -->
+<post.Content />
+</div>
+</article>
+</NewsLayout>
